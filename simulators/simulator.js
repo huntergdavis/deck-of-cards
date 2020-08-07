@@ -148,7 +148,7 @@ window.onload = function() {
         }
         
         console.timeLog("runsim");
-        document.getElementById("output").textContent =  "Total level " + level + "Wins out of " + numSims + " are " + totalWins;
+        document.getElementById("output").textContent =  "Total level " + level + " Wins out of " + numSims + " are " + totalWins;
 
     }
 }
