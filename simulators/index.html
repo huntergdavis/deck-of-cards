@@ -17,9 +17,17 @@
         OK, I've created a new solitaire game.  As with any good solitaire game, it's difficult to win.  At times seemingly impossibly difficult.  
 
         So... Let's simulate a few dozen/thousand/million card games and see how it really plays out. 
-
-        <input id="runsim" type="button" value="Run simulation">
+        <br>
+        <input id="level" type="number" max="6" min="1" value="1" title="Level" >
+        Level
+        <br>
+        <input id="iterations" type="number"  min="1" value="100" title="Number of Simulations to Run" >
+        Number of Simulations to Run
+        <br>
         
+        <input id="runsim" type="button" value="Run simulation(s)">
+
     </p>
+    <p id="output"></p>
   </body>
 </html>

@@ -1,5 +1,11 @@
 // run a single card game
 function runSimulation(level) {
+
+    if(level > 6) {
+        // not enough cards in a deck to do level 7 here
+        return 0;
+    }
+
     var deck = Deck();
     deck.shuffle();
 
@@ -20,7 +26,7 @@ function runSimulation(level) {
     // so we have 6 + (6*level) + 1 + level + 1
     // which reduces to 8 + (7*level)
     // meaning our maximum level = (52-8)/7 = 44/7 = level 6! 
-    // *note - higher levels towards 6 may be mathematically impossible to win based on card distribution
+    // higher levels appear to have equal or higher levels of win %.. interesting!!  
 
 
     // draw our 8+(7*level) cards   
@@ -35,6 +41,8 @@ function runSimulation(level) {
     // our suit card sets the level suit, which doubles the values of all cards of that suite this level
     var suitCard = teamCards[teamCards.length-1];
     var suit = suitCard.suit;
+
+    //console.log("suit is " + suit);
 
     // 7 rounds 
     for(var round = 0;round<7;round++) {
@@ -51,35 +59,96 @@ function runSimulation(level) {
         }
 
         // calculate rank of enemy cards
+        // store the highest card in case we want to swap it later, except for the boss
         var enemyRank = 0;
-        for (const card of roundEnemies) {
-            if(card.suit == suit) {
-                enemyRank += (card.rank * 2);
-            }else {
-                enemyRank += card.enemyRank;
+        var highestEnemyRank = 0;
+        var enemyRankIndex = 0;
+
+        // boss round, boss cards are worth +1 and then triple times level !! 
+        if(round == 6) {
+            enemyRank = (roundEnemies[0].rank + 1) * (level*3);
+            //console.log("Round " + round + " and boss card rank " + enemyRank);
+                
+        }else {
+            for (const [i,card] of roundEnemies.entries()) {
+                var cardRank;
+
+                //console.log("Round " + round + " and enemy card rank " + card.rank + "and card suit" + card.suit);
+                
+
+                if(card.suit == suit) {
+                    cardRank = (card.rank * 2);
+                }else {
+                    cardRank = card.rank;
+                }
+
+                enemyRank += cardRank;
+                if(cardRank > highestEnemyRank) {
+                    enemyRankIndex = i;
+                    highestEnemyRank = cardRank;
+                }
             }
         }
 
         // calculate rank of hand cards
+        // store the lowest card in case we want to swap it later
         var rank = commander.rank;
-        for (const card of teamCards) {
+        var lowestHandRank = 26;
+        var lowestRankIndex = 0;
+        for (const [i,card] of teamCards.entries()) {
+            var cardRank;
+
             if(card.suit == suit) {
-                rank += (card.rank * 2);
+                cardRank = (card.rank * 2);
             }else {
-                rank += card.rank;
+                cardRank = card.rank;
             }
+            rank += cardRank;
+
+            if(cardRank < lowestHandRank) {
+                lowestHandRank = cardRank;
+                lowestRankIndex = i;
+            }
+            //console.log("Round " + round + " and player card rank " + card.rank + "and card suit" + card.suit);
+            
         }
 
-        alert("Toal hand rank: " + rank);
-        alert("Total enemy rank" + enemyRank);
+
+        // check if we lost the game!! 
+        if(enemyRank > rank) {
+            return 0;
+        }
+
+        // check for a swip-swap    
+        if(round != 6) {
+            if(lowestHandRank < highestEnemyRank) {
+                teamCards[lowestRankIndex] = roundEnemies[enemyRankIndex];
+            }
+        }else {
+            //console.log("Round " + round + " and hero card rank " + rank);
+        }
+
     }
+
+
+    // we made it through all rounds!  Return 1 or 'win';
+    return 1;
 
 }
 
 
-
 window.onload = function() {
     document.getElementById("runsim").onclick = function fun() {
-        runSimulation(1); 
+        var level = 1*document.getElementById("level").value;
+        var numSims = 1*document.getElementById("iterations").value;
+        var totalWins = 0;
+        console.time("runsim");
+        for(var i = 0;i<numSims;i++) {
+            totalWins += runSimulation(level);
+        }
+        
+        console.timeLog("runsim");
+        document.getElementById("output").textContent =  "Total level " + level + "Wins out of " + numSims + " are " + totalWins;
+
     }
 }
