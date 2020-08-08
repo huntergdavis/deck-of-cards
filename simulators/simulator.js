@@ -137,7 +137,55 @@ function runSimulation(level) {
 }
 
 
-window.onload = function() {
+window.onload = function() {    
+
+    // programmatically create our input elements for the simulator
+    var levelElement = document.createElement('input')
+    levelElement.id = "level";
+    levelElement.type = "number";
+    levelElement.max = 6;
+    levelElement.min = 1;
+    levelElement.value = 1;
+    levelElement.title = "Level";
+  
+    document.body.appendChild(levelElement);
+
+    var levelLabel = document.createElement("Label");
+    levelLabel.setAttribute("for","level");
+    levelLabel.innerHTML = "Level";
+    document.body.appendChild(levelLabel);
+
+    document.body.appendChild(document.createElement('br'));
+
+    var iterationsElement = document.createElement('input')
+    iterationsElement.id = "iterations";
+    iterationsElement.type = "number";
+    iterationsElement.min = 1;
+    iterationsElement.value = 100;
+    iterationsElement.title = "Number of Simulations to Run";
+    document.body.appendChild(iterationsElement);
+
+    var iterLabel = document.createElement("Label");
+    iterLabel.setAttribute("for","iterations");
+    iterLabel.innerHTML = "Number of Simulations to Run";
+    document.body.appendChild(iterLabel);
+       
+
+    document.body.appendChild(document.createElement('br'));
+
+    var runElement = document.createElement('input')
+    runElement.id = "runsim";
+    runElement.type = "button";
+    runElement.value = "Run Simulation(s)";
+    document.body.appendChild(runElement);
+    
+    var outputElement = document.createElement('p');
+    outputElement.id = "output";
+    document.body.appendChild(outputElement);
+
+
+    document.body.appendChild(document.createElement('br'));
+    
     document.getElementById("runsim").onclick = function fun() {
         var level = 1*document.getElementById("level").value;
         var numSims = 1*document.getElementById("iterations").value;
